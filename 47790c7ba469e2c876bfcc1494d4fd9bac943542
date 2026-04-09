@@ -1,0 +1,53 @@
+handlers/device_handler.py
+  849ef9339ff8359f 1-49
+lib/crypto_utils.py
+  849ef9339ff8359f 1-20
+.gitignore
+  849ef9339ff8359f 1-10
+conf/settings.py
+  849ef9339ff8359f 1-10
+requirements.txt
+  849ef9339ff8359f 1-5
+utest/test_auth_service.py
+  849ef9339ff8359f 1-51
+services/device_service.py
+  849ef9339ff8359f 1-73
+handlers/health_handler.py
+  849ef9339ff8359f 1-10
+services/auth_service.py
+  849ef9339ff8359f 1-93
+handlers/auth_handler.py
+  849ef9339ff8359f 1-57
+models/__init__.py
+  849ef9339ff8359f 1-5
+models/user.py
+  849ef9339ff8359f 1-29
+app.py
+  849ef9339ff8359f 1-21
+README.md
+  849ef9339ff8359f 1-24
+models/session.py
+  849ef9339ff8359f 1-31
+models/device.py
+  849ef9339ff8359f 1-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.7",
+  "base_commit_sha": "47790c7ba469e2c876bfcc1494d4fd9bac943542",
+  "prompts": {
+    "849ef9339ff8359f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "c552550f-aa69-41ca-9323-191e41887a44",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Anushka Parey",
+      "messages": [],
+      "total_additions": 517,
+      "total_deletions": 0,
+      "accepted_lines": 517,
+      "overriden_lines": 0
+    }
+  }
+}
