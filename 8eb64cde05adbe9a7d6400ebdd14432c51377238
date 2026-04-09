@@ -1,0 +1,27 @@
+conf/settings.py
+  a3b3f3fbaa55319c 9-14
+services/login_rate_limiter.py
+  a3b3f3fbaa55319c 1-102
+handlers/auth_handler.py
+  a3b3f3fbaa55319c 5,8-9,38-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.7",
+  "base_commit_sha": "8eb64cde05adbe9a7d6400ebdd14432c51377238",
+  "prompts": {
+    "a3b3f3fbaa55319c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "7190130d-6f39-4dde-8d76-7e8f91a4c243",
+        "model": "claude-4.6-sonnet-medium-thinking"
+      },
+      "human_author": "Anushka Parey",
+      "messages": [],
+      "total_additions": 141,
+      "total_deletions": 1,
+      "accepted_lines": 141,
+      "overriden_lines": 0
+    }
+  }
+}
