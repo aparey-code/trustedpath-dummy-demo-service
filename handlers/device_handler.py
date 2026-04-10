@@ -4,11 +4,16 @@ from __future__ import annotations
 
 import logging
 from enum import Enum
-from typing import Annotated, Any
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Response, Security, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictFloat, StrictStr
+from sqlalchemy.orm import Session
+
+from conf.database import get_db_session
+from services.auth_service import validate_session
+from services.device_service import DeviceService
 
 DEVICE_KEY_PATTERN = r"^[A-Za-z0-9._:-]+$"
 DEVICE_KEY_MIN_LEN = 16
@@ -116,7 +121,7 @@ class DeviceResponse(BaseModel):
 
 
 class AuthContext(BaseModel):
-    subject: str
+    subject: int
     token: str
 
 
@@ -125,6 +130,7 @@ async def get_auth_context(
         HTTPAuthorizationCredentials | None,
         Security(bearer_scheme),
     ],
+    db: Annotated[Session, Depends(get_db_session)],
 ) -> AuthContext:
     """
     Centralized bearer auth extraction and basic validation.
@@ -146,39 +152,20 @@ async def get_auth_context(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # TODO: verify token signature / expiry / issuer / audience
-    # TODO: load authenticated user identity from token claims
-    subject = parse_subject_from_token(token)
-
-    return AuthContext(subject=subject, token=token)
-
-
-async def get_device_service() -> "DeviceService":
-    """
-    Dependency placeholder.
-
-    Replace with actual DB-backed service injection, e.g.:
-        return DeviceService(session)
-    """
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Device service dependency not wired",
-    )
-
-
-def parse_subject_from_token(token: str) -> str:
-    """
-    Placeholder for real token validation.
-    Fail closed instead of trusting an unverified token.
-    """
-    # Example only. Do not ship token parsing like this in production.
-    if len(token) < 20:
+    session = validate_session(db, token)
+    if session is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token",
+            detail="Invalid or expired session",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return "authenticated-user-id"
+
+    return AuthContext(subject=session.user_id, token=token)
+
+
+def get_device_service(db: Annotated[Session, Depends(get_db_session)]) -> DeviceService:
+    """Provide a DB-backed device service for the request."""
+    return DeviceService(db)
 
 
 def _safe_key_suffix(key: str, suffix_len: int = 6) -> str:
@@ -188,46 +175,24 @@ def _safe_key_suffix(key: str, suffix_len: int = 6) -> str:
     return "***"
 
 
-class DeviceService:
-    """
-    Interface sketch for persistence/business logic.
-    Implement with your DB layer.
-    """
-
-    async def register_device(self, *, owner_id: str, payload: DeviceRegisterRequest) -> Any:
-        raise NotImplementedError
-
-    async def list_devices(self, *, owner_id: str) -> list[Any]:
-        raise NotImplementedError
-
-    async def get_device(self, *, owner_id: str, device_key: str) -> Any | None:
-        raise NotImplementedError
-
-    async def update_device(
-        self,
-        *,
-        owner_id: str,
-        device_key: str,
-        changes: dict[str, Any],
-    ) -> Any | None:
-        raise NotImplementedError
-
-    async def delete_device(self, *, owner_id: str, device_key: str) -> bool:
-        raise NotImplementedError
-
-
 @router.post(
     "/register",
     response_model=DeviceResponse,
     status_code=status.HTTP_201_CREATED,
 )
-async def register_device(
+def register_device(
     req: DeviceRegisterRequest,
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
+    db: Annotated[Session, Depends(get_db_session)],
 ) -> DeviceResponse:
     """Register a new device for the authenticated user."""
-    device = await service.register_device(owner_id=auth.subject, payload=req)
+    try:
+        device = service.register_device(owner_id=auth.subject, payload=req)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+    db.commit()
 
     logger.info(
         "Device registered",
@@ -237,33 +202,34 @@ async def register_device(
 
 
 @router.get("/", response_model=list[DeviceResponse])
-async def list_devices(
+def list_devices(
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
 ) -> list[DeviceResponse]:
     """List all devices registered to the authenticated user."""
-    return await service.list_devices(owner_id=auth.subject)
+    return service.list_devices(owner_id=auth.subject)
 
 
 @router.get("/{device_key}", response_model=DeviceResponse)
-async def get_device(
+def get_device(
     device_key: DeviceKeyPath,
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
 ) -> DeviceResponse:
     """Get details of a specific device by its key."""
-    device = await service.get_device(owner_id=auth.subject, device_key=device_key)
+    device = service.get_device(owner_id=auth.subject, device_key=device_key)
     if device is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
     return device
 
 
 @router.patch("/{device_key}", response_model=DeviceResponse)
-async def update_device(
+def update_device(
     device_key: DeviceKeyPath,
     req: DeviceUpdateRequest,
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
+    db: Annotated[Session, Depends(get_db_session)],
 ) -> DeviceResponse:
     """Update device attributes such as posture score or managed status."""
     changes = req.model_dump(exclude_unset=True)
@@ -274,13 +240,15 @@ async def update_device(
             detail="No valid fields provided for update",
         )
 
-    device = await service.update_device(
+    device = service.update_device(
         owner_id=auth.subject,
         device_key=device_key,
         changes=changes,
     )
     if device is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+
+    db.commit()
 
     logger.info(
         "Device updated",
@@ -290,15 +258,18 @@ async def update_device(
 
 
 @router.delete("/{device_key}", status_code=status.HTTP_204_NO_CONTENT)
-async def unregister_device(
+def unregister_device(
     device_key: DeviceKeyPath,
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
+    db: Annotated[Session, Depends(get_db_session)],
 ) -> Response:
     """Remove a device from the user's registered devices."""
-    deleted = await service.delete_device(owner_id=auth.subject, device_key=device_key)
+    deleted = service.delete_device(owner_id=auth.subject, device_key=device_key)
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+
+    db.commit()
 
     logger.info(
         "Device unregistered",
