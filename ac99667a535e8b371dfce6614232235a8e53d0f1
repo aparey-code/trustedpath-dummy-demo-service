@@ -1,0 +1,25 @@
+handlers/incident_handler.py
+  137d3bedcbed2010 1-61,63-71,73-81,123-204
+app.py
+  137d3bedcbed2010 15,34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "ac99667a535e8b371dfce6614232235a8e53d0f1",
+  "prompts": {
+    "137d3bedcbed2010": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b9260ef1-40d1-4feb-8b21-e402677c2b37",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Ronan Dsouza",
+      "messages": [],
+      "total_additions": 183,
+      "total_deletions": 0,
+      "accepted_lines": 163,
+      "overriden_lines": 2
+    }
+  }
+}
