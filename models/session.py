@@ -22,9 +22,15 @@ class AuthSession(Base):
 
     user = relationship("User", back_populates="sessions")
 
+    @staticmethod
+    def _as_utc(value: datetime) -> datetime:
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
     @property
     def is_expired(self) -> bool:
-        return datetime.now(timezone.utc) > self.expires_at
+        return datetime.now(timezone.utc) > self._as_utc(self.expires_at)
 
     @property
     def is_valid(self) -> bool:
