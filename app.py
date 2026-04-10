@@ -12,6 +12,7 @@ from handlers.posture_handler import router as posture_router
 from handlers.risk_handler import router as risk_router
 from handlers.trust_handler import router as trust_router
 from handlers.notification_handler import router as notification_router
+from handlers.incident_handler import router as incident_router
 
 
 def create_app() -> FastAPI:
@@ -30,5 +31,6 @@ def create_app() -> FastAPI:
     app.include_router(posture_router)
     app.include_router(trust_router)
     app.include_router(notification_router)
+    app.include_router(incident_router)
 
     return app
