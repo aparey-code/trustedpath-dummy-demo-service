@@ -1,0 +1,25 @@
+app.py
+  5512e2b9f829688d 5,23
+handlers/audit_handler.py
+  5512e2b9f829688d 1-94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "b6181c96bcdd4231d61f8335fde5c0176e293c63",
+  "prompts": {
+    "5512e2b9f829688d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac241d82-7384-479f-84ae-32976640d3f5",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Ronan Dsouza",
+      "messages": [],
+      "total_additions": 96,
+      "total_deletions": 0,
+      "accepted_lines": 96,
+      "overriden_lines": 0
+    }
+  }
+}
