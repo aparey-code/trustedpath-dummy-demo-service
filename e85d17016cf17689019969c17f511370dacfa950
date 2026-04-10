@@ -1,0 +1,25 @@
+services/credential_validator.py
+  a3b3f3fbaa55319c 1-148
+handlers/risk_handler.py
+  a3b3f3fbaa55319c 3-4,6-7,9,18,21,42-61,63,65-67,69,71-73,75-78,80,84,86,88,92-95,97,101-115,118-120,124-125,128-129,131-132,136,138,142-143,145,148-149,151-156,158-174,183,185,187-189,196,200
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.7",
+  "base_commit_sha": "e85d17016cf17689019969c17f511370dacfa950",
+  "prompts": {
+    "a3b3f3fbaa55319c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "7190130d-6f39-4dde-8d76-7e8f91a4c243",
+        "model": "claude-4.6-sonnet-medium-thinking"
+      },
+      "human_author": "Anushka Parey",
+      "messages": [],
+      "total_additions": 200,
+      "total_deletions": 267,
+      "accepted_lines": 265,
+      "overriden_lines": 23
+    }
+  }
+}
