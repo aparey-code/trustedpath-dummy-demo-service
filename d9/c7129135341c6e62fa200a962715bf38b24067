@@ -1,0 +1,25 @@
+handlers/auth_handler.py
+  a3b3f3fbaa55319c 4,9-10,33-55,63-71,73-75,95,104
+handlers/health_handler.py
+  a3b3f3fbaa55319c 4,41-66,69,72,80,82-83,92-95,101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.7",
+  "base_commit_sha": "d9c7129135341c6e62fa200a962715bf38b24067",
+  "prompts": {
+    "a3b3f3fbaa55319c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "7190130d-6f39-4dde-8d76-7e8f91a4c243",
+        "model": "gpt-5.3-codex"
+      },
+      "human_author": "Anushka Parey",
+      "messages": [],
+      "total_additions": 329,
+      "total_deletions": 232,
+      "accepted_lines": 84,
+      "overriden_lines": 109
+    }
+  }
+}
