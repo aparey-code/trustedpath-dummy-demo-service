@@ -23,7 +23,15 @@ class AuditQueryRequest(BaseModel):
     event_type: str | None = None
     user_id: str | None = None
     device_key: str | None = None
+    start_time: str | None = None
+    end_time: str | None = None
     limit: int = 50
+
+
+class AuditSummary(BaseModel):
+    total_events: int
+    events_by_type: dict[str, int]
+    unique_users: int
 
 
 _DUMMY_EVENTS: list[dict] = [
@@ -91,4 +99,29 @@ async def query_audit_events(req: AuditQueryRequest):
     if req.device_key:
         results = [e for e in results if e["device_key"] == req.device_key]
 
+    if req.start_time:
+        results = [e for e in results if e["timestamp"] >= req.start_time]
+    if req.end_time:
+        results = [e for e in results if e["timestamp"] <= req.end_time]
+
     return results[: req.limit]
+
+
+@router.get("/summary", response_model=AuditSummary)
+async def audit_summary():
+    """Return a summary of audit events grouped by type."""
+    logger.info("Generating audit event summary")
+
+    events_by_type: dict[str, int] = {}
+    unique_users: set[str] = set()
+
+    for event in _DUMMY_EVENTS:
+        etype = event["event_type"]
+        events_by_type[etype] = events_by_type.get(etype, 0) + 1
+        unique_users.add(event["user_id"])
+
+    return AuditSummary(
+        total_events=len(_DUMMY_EVENTS),
+        events_by_type=events_by_type,
+        unique_users=len(unique_users),
+    )
