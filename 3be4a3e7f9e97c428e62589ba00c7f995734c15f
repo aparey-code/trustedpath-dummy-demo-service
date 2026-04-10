@@ -1,0 +1,24 @@
+handlers/device_handler.py
+  51990af736eee6c2 1,4,8,11,16,20,23-25,30-34,37-42,44,48-84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "3be4a3e7f9e97c428e62589ba00c7f995734c15f",
+  "prompts": {
+    "51990af736eee6c2": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "a8bddc57-a048-43da-b7f5-e226b462f9f6",
+        "model": "claude-4.5-opus-high-thinking"
+      },
+      "human_author": "Divy",
+      "messages": [],
+      "total_additions": 59,
+      "total_deletions": 24,
+      "accepted_lines": 59,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/82362b76bb7ab4083cd25485f6cdbe7c669530fb7b9f684ce3aa0deb7a0250f6"
+    }
+  }
+}
