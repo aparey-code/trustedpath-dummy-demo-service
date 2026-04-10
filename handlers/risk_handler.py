@@ -47,8 +47,188 @@ _RISK_SIGNALS_DB: dict[str, list[dict]] = {
             "weight": 0.0,
             "description": "MFA verified for current session",
         },
+                {
+            "signal_type": "device_trust",
+            "weight": 0.1,
+            "description": "Device dev-abc123 is trusted with posture score 82",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.05,
+            "description": "Login from known corporate IP range",
+        },
+        {
+            "signal_type": "mfa_status",
+            "weight": 0.0,
+            "description": "MFA verified for current session",
+        },
+                {
+            "signal_type": "device_trust",
+            "weight": 0.1,
+            "description": "Device dev-abc123 is trusted with posture score 82",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.05,
+            "description": "Login from known corporate IP range",
+        },
+        {
+            "signal_type": "mfa_status",
+            "weight": 0.0,
+            "description": "MFA verified for current session",
+        },
+                {
+            "signal_type": "device_trust",
+            "weight": 0.1,
+            "description": "Device dev-abc123 is trusted with posture score 82",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.05,
+            "description": "Login from known corporate IP range",
+        },
+        {
+            "signal_type": "mfa_status",
+            "weight": 0.0,
+            "description": "MFA verified for current session",
+        },
+                {
+            "signal_type": "device_trust",
+            "weight": 0.1,
+            "description": "Device dev-abc123 is trusted with posture score 82",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.05,
+            "description": "Login from known corporate IP range",
+        },
+        {
+            "signal_type": "mfa_status",
+            "weight": 0.0,
+            "description": "MFA verified for current session",
+        },
+                {
+            "signal_type": "device_trust",
+            "weight": 0.1,
+            "description": "Device dev-abc123 is trusted with posture score 82",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.05,
+            "description": "Login from known corporate IP range",
+        },
+        {
+            "signal_type": "mfa_status",
+            "weight": 0.0,
+            "description": "MFA verified for current session",
+        },
+                {
+            "signal_type": "device_trust",
+            "weight": 0.1,
+            "description": "Device dev-abc123 is trusted with posture score 82",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.05,
+            "description": "Login from known corporate IP range",
+        },
+        {
+            "signal_type": "mfa_status",
+            "weight": 0.0,
+            "description": "MFA verified for current session",
+        },
     ],
     "user-bob": [
+        {
+            "signal_type": "device_trust",
+            "weight": 0.4,
+            "description": "Device dev-xyz789 has unknown trust level",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.3,
+            "description": "Login from unrecognised IP address",
+        },
+        {
+            "signal_type": "failed_attempts",
+            "weight": 0.2,
+            "description": "1 failed login attempt in the last hour",
+        },
+        {
+            "signal_type": "device_trust",
+            "weight": 0.4,
+            "description": "Device dev-xyz789 has unknown trust level",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.3,
+            "description": "Login from unrecognised IP address",
+        },
+        {
+            "signal_type": "failed_attempts",
+            "weight": 0.2,
+            "description": "1 failed login attempt in the last hour",
+        },
+        {
+            "signal_type": "device_trust",
+            "weight": 0.4,
+            "description": "Device dev-xyz789 has unknown trust level",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.3,
+            "description": "Login from unrecognised IP address",
+        },
+        {
+            "signal_type": "failed_attempts",
+            "weight": 0.2,
+            "description": "1 failed login attempt in the last hour",
+        },
+        {
+            "signal_type": "device_trust",
+            "weight": 0.4,
+            "description": "Device dev-xyz789 has unknown trust level",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.3,
+            "description": "Login from unrecognised IP address",
+        },
+        {
+            "signal_type": "failed_attempts",
+            "weight": 0.2,
+            "description": "1 failed login attempt in the last hour",
+        },
+        {
+            "signal_type": "device_trust",
+            "weight": 0.4,
+            "description": "Device dev-xyz789 has unknown trust level",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.3,
+            "description": "Login from unrecognised IP address",
+        },
+        {
+            "signal_type": "failed_attempts",
+            "weight": 0.2,
+            "description": "1 failed login attempt in the last hour",
+        },
+        {
+            "signal_type": "device_trust",
+            "weight": 0.4,
+            "description": "Device dev-xyz789 has unknown trust level",
+        },
+        {
+            "signal_type": "login_location",
+            "weight": 0.3,
+            "description": "Login from unrecognised IP address",
+        },
+        {
+            "signal_type": "failed_attempts",
+            "weight": 0.2,
+            "description": "1 failed login attempt in the last hour",
+        },
         {
             "signal_type": "device_trust",
             "weight": 0.4,
