@@ -1,0 +1,25 @@
+app.py
+  0ee99a637b86b885 6,11-12,29
+handlers/trust_handler.py
+  0ee99a637b86b885 1-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "cecf8345ad645844b2fe6f8d6219eb27222e80eb",
+  "prompts": {
+    "0ee99a637b86b885": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d76db-aa88-77c0-a54b-0bde6e5a609c",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Ronan Dsouza",
+      "messages": [],
+      "total_additions": 75,
+      "total_deletions": 1,
+      "accepted_lines": 75,
+      "overriden_lines": 0
+    }
+  }
+}
