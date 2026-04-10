@@ -1,0 +1,25 @@
+app.py
+  b678a9ae6046bc66 8,21
+handlers/posture_handler.py
+  b678a9ae6046bc66 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "e39a7ef85084b5fac027598c62b40d32acc81c6b",
+  "prompts": {
+    "b678a9ae6046bc66": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c3af0b5f-1bab-4b23-91e4-646364693ead",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Ronan Dsouza",
+      "messages": [],
+      "total_additions": 38,
+      "total_deletions": 0,
+      "accepted_lines": 38,
+      "overriden_lines": 0
+    }
+  }
+}
