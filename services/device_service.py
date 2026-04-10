@@ -11,11 +11,11 @@ from conf.settings import FEATURE_FLAG_POSTURE_CHECK
 
 logger = logging.getLogger(__name__)
 
-TRUST_LEVEL_THRESHOLDS = {
-    "trusted": 80.0,
-    "moderate": 50.0,
-    "untrusted": 0.0,
-}
+TRUST_LEVEL_THRESHOLDS = [
+    ("trusted", 80.0),
+    ("moderate", 50.0),
+    ("untrusted", 0.0),
+ """Map a numeric posture score to a trust level string."""]
 
 
 def register_device(
@@ -126,7 +126,7 @@ def delete_device(db: Session, owner_id: int, device_key: str) -> bool:
 
 def _compute_trust_level(score: float) -> str:
     """Map a numeric posture score to a trust level string."""
-    for level, threshold in TRUST_LEVEL_THRESHOLDS.items():
+    for level, threshold in TRUST_LEVEL_THRESHOLDS:
         if score >= threshold:
             return level
     return "untrusted"
