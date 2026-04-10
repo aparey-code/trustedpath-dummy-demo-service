@@ -1,0 +1,31 @@
+models/notification.py
+  9db173686fdf4ae1 1-18
+app.py
+  9db173686fdf4ae1 14,32
+handlers/notification_handler.py
+  9db173686fdf4ae1 1-118
+models/__init__.py
+  9db173686fdf4ae1 4,6
+services/notification_service.py
+  9db173686fdf4ae1 1-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "38666605593c304bf1fcefbeff265b1a41cf0a6f",
+  "prompts": {
+    "9db173686fdf4ae1": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "68ed02b5-5559-48b3-958d-0ed1318492d1",
+        "model": "unknown"
+      },
+      "human_author": "Surbhi Kohli",
+      "messages": [],
+      "total_additions": 207,
+      "total_deletions": 1,
+      "accepted_lines": 207,
+      "overriden_lines": 0
+    }
+  }
+}
