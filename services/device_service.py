@@ -43,7 +43,15 @@ def register_device(
     )
     db.add(device)
     db.flush()
-    logger.info("Registered device %s for user %d", device_key[:12], owner_id)
+    logger.info(
+    "device_registered",
+    extra={
+        "device_key_prefix": device_key[:12],
+        "owner_id": owner_id,
+        "platform": platform,
+        "is_managed": is_managed,
+    },
+    )
     return device
 
 
