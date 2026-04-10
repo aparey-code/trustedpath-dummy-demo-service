@@ -1,23 +1,18 @@
 """HTTP handlers for authentication endpoints."""
 
 import logging
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from pydantic import BaseModel, ConfigDict
-from sqlalchemy.orm import Session
-
-from conf.database import get_db_session
-from conf.settings import SESSION_TIMEOUT_SECS
-from models.session import AuthSession
-from services.auth_service import authenticate_user, create_session, revoke_session, validate_session
+from services.login_rate_limiter import get_login_rate_limiter
+from conf.settings import LOGIN_MAX_FAILURES, LOGIN_WINDOW_SECS
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 class LoginRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
-
     username: str
     password: str
 
@@ -34,76 +29,61 @@ class SessionInfo(BaseModel):
     ip_address: str | None
 
 
-def _extract_bearer_token(request: Request) -> str:
-    authorization = request.headers.get("Authorization", "")
-    scheme, _, token = authorization.partition(" ")
-    if scheme.lower() != "bearer" or not token.strip():
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing or invalid bearer token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return token.strip()
-
-
-def _get_active_session(db: Session, request: Request) -> AuthSession:
-    token = _extract_bearer_token(request)
-    session = validate_session(db, token)
-    if session is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired session",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return session
-
-
 @router.post("/login", response_model=LoginResponse)
-def login(
-    req: LoginRequest,
-    request: Request,
-    db: Session = Depends(get_db_session),
-) -> LoginResponse:
+async def login(req: LoginRequest, request: Request):
     """Authenticate a user and return a session token."""
-    user = authenticate_user(db, req.username, req.password)
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    from services.auth_service import authenticate_user, create_session
+    from conf.settings import SESSION_TIMEOUT_SECS
 
-    session = create_session(
-        db,
-        user,
-        ip_address=request.client.host if request.client else "unknown",
-        user_agent=request.headers.get("User-Agent", ""),
-    )
-    db.commit()
+    client_ip = request.client.host if request.client else "unknown"
+    limiter = get_login_rate_limiter()
 
-    return LoginResponse(session_token=session.session_token, expires_in=SESSION_TIMEOUT_SECS)
+    if limiter.is_limited(client_ip):
+        logger.warning(
+            "Rate limit exceeded for IP %s — returning 429", client_ip
+        )
+        return JSONResponse(
+            status_code=429,
+            content={
+                "detail": (
+                    f"Too many failed login attempts. "
+                    f"Try again after {LOGIN_WINDOW_SECS // 60} minutes."
+                )
+            },
+            headers={"Retry-After": str(LOGIN_WINDOW_SECS)},
+        )
+
+    # TODO: inject db session via dependency; replace the stub below once wired.
+    # When the DB session is available the login flow should be:
+    #
+    #   user = authenticate_user(db, req.username, req.password)
+    #   if user is None:
+    #       limiter.record_failure(client_ip)
+    #       raise HTTPException(status_code=401, detail="Invalid username or password")
+    #   limiter.reset(client_ip)
+    #   session = create_session(db, user, client_ip, request.headers.get("User-Agent", ""))
+    #   return LoginResponse(session_token=session.session_token,
+    #                        expires_in=SESSION_TIMEOUT_SECS)
+    raise HTTPException(status_code=501, detail="DB session injection not yet wired")
 
 
-@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
-def logout(
-    request: Request,
-    db: Session = Depends(get_db_session),
-) -> Response:
+@router.post("/logout")
+async def logout(request: Request):
     """Revoke the current session."""
-    token = _extract_bearer_token(request)
-    if not revoke_session(db, token):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired session")
+    token = request.headers.get("Authorization", "").removeprefix("Bearer ")
+    if not token:
+        raise HTTPException(status_code=401, detail="Missing authorization header")
 
-    db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    # TODO: inject db session via dependency
+    raise HTTPException(status_code=501, detail="DB session injection not yet wired")
 
 
 @router.get("/session", response_model=SessionInfo)
-def get_session(
-    request: Request,
-    db: Session = Depends(get_db_session),
-) -> SessionInfo:
+async def get_session(request: Request):
     """Return info about the current session."""
-    session = _get_active_session(db, request)
-    return SessionInfo(
-        user_id=session.user_id,
-        username=session.user.username,
-        is_mfa_verified=session.is_mfa_verified,
-        ip_address=session.ip_address,
-    )
+    token = request.headers.get("Authorization", "").removeprefix("Bearer ")
+    if not token:
+        raise HTTPException(status_code=401, detail="Missing authorization header")
+
+    # TODO: inject db session via dependency
+    raise HTTPException(status_code=501, detail="DB session injection not yet wired")
