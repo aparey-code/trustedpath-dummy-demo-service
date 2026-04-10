@@ -22,5 +22,6 @@ def create_app() -> FastAPI:
     app.include_router(auth_router)
     app.include_router(device_router)
     app.include_router(policy_router)
+    app.include_router(audit_router)
 
     return app
