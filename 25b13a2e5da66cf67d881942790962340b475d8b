@@ -1,0 +1,25 @@
+handlers/risk_handler.py
+  feb84f81a304d0e4 1-142
+app.py
+  feb84f81a304d0e4 10,25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "25b13a2e5da66cf67d881942790962340b475d8b",
+  "prompts": {
+    "feb84f81a304d0e4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "41406360-b905-4889-8fb3-95d25bddf240",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Ronan Dsouza",
+      "messages": [],
+      "total_additions": 144,
+      "total_deletions": 0,
+      "accepted_lines": 144,
+      "overriden_lines": 0
+    }
+  }
+}
