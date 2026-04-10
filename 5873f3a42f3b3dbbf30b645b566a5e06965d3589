@@ -1,0 +1,29 @@
+utest/test_policy_service.py
+  b04d16dcab383edb 1-117
+handlers/policy_handler.py
+  b04d16dcab383edb 1-42
+app.py
+  b04d16dcab383edb 8,21
+services/policy_service.py
+  b04d16dcab383edb 1-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "5873f3a42f3b3dbbf30b645b566a5e06965d3589",
+  "prompts": {
+    "b04d16dcab383edb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "830e34ad-35d8-478d-8545-155632abefea",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Ronan Dsouza",
+      "messages": [],
+      "total_additions": 241,
+      "total_deletions": 0,
+      "accepted_lines": 241,
+      "overriden_lines": 0
+    }
+  }
+}
