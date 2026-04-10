@@ -1,0 +1,27 @@
+app.py
+  cd3119a0f1d8d91f 5
+handlers/health_handler.py
+  cd3119a0f1d8d91f 3,8,10,13,28-36,47-70
+handlers/audit_handler.py
+  cd3119a0f1d8d91f 26-27,31-34,102-106,108-127
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "8ac209c518567c8a4b6a18ef7a3062fc8693ae16",
+  "prompts": {
+    "cd3119a0f1d8d91f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d3399942-d922-42b4-99a1-aaad136ba561",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Surbhi Kohli",
+      "messages": [],
+      "total_additions": 72,
+      "total_deletions": 0,
+      "accepted_lines": 72,
+      "overriden_lines": 0
+    }
+  }
+}

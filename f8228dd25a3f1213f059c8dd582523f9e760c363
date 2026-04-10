@@ -1,0 +1,25 @@
+handlers/device_handler.py
+  c0d3x1a2b3c4d5e6 1-25
+services/device_service.py
+  c0d3x1a2b3c4d5e6 1-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "f8228dd25a3f1213f059c8dd582523f9e760c363",
+  "prompts": {
+    "c0d3x1a2b3c4d5e6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "codex-cli-session",
+        "model": "gpt-4"
+      },
+      "human_author": "Divya",
+      "messages": [],
+      "total_additions": 79,
+      "total_deletions": 0,
+      "accepted_lines": 79,
+      "overriden_lines": 0
+    }
+  }
+}
