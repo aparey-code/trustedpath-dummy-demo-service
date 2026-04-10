@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 
-from handlers.audit_handler import router as audit_router
+from conf.database import init_db
 from handlers.auth_handler import router as auth_router
 from handlers.device_handler import router as device_router
 from handlers.health_handler import router as health_router
@@ -10,6 +10,8 @@ from handlers.policy_handler import router as policy_router
 
 
 def create_app() -> FastAPI:
+    init_db()
+
     app = FastAPI(
         title="Trustedpath Demo Service",
         description="A demo microservice for auth, device management, and posture evaluation.",
