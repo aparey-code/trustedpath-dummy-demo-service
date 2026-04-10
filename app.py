@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 
+from handlers.audit_handler import router as audit_router
 from handlers.auth_handler import router as auth_router
 from handlers.device_handler import router as device_router
 from handlers.health_handler import router as health_router
