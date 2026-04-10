@@ -6,9 +6,13 @@ import logging
 from enum import Enum
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, Response, Security, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Response, Security, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictFloat, StrictStr
+
+DEVICE_KEY_PATTERN = r"^[A-Za-z0-9._:-]+$"
+DEVICE_KEY_MIN_LEN = 16
+DEVICE_KEY_MAX_LEN = 128
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/devices", tags=["Devices"])
@@ -29,9 +33,19 @@ class Platform(str, Enum):
 DeviceKey = Annotated[
     StrictStr,
     Field(
-        min_length=16,
-        max_length=128,
-        pattern=r"^[A-Za-z0-9._:-]+$",
+        min_length=DEVICE_KEY_MIN_LEN,
+        max_length=DEVICE_KEY_MAX_LEN,
+        pattern=DEVICE_KEY_PATTERN,
+        description="Stable device identifier",
+    ),
+]
+
+DeviceKeyPath = Annotated[
+    str,
+    Path(
+        min_length=DEVICE_KEY_MIN_LEN,
+        max_length=DEVICE_KEY_MAX_LEN,
+        pattern=DEVICE_KEY_PATTERN,
         description="Stable device identifier",
     ),
 ]
@@ -167,6 +181,13 @@ def parse_subject_from_token(token: str) -> str:
     return "authenticated-user-id"
 
 
+def _safe_key_suffix(key: str, suffix_len: int = 6) -> str:
+    """Return the last N chars of a key for logging, or a placeholder if too short."""
+    if len(key) >= suffix_len * 2:
+        return key[-suffix_len:]
+    return "***"
+
+
 class DeviceService:
     """
     Interface sketch for persistence/business logic.
@@ -204,13 +225,13 @@ async def register_device(
     req: DeviceRegisterRequest,
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
-):
+) -> DeviceResponse:
     """Register a new device for the authenticated user."""
     device = await service.register_device(owner_id=auth.subject, payload=req)
 
     logger.info(
         "Device registered",
-        extra={"user_id": auth.subject, "device_key_suffix": req.device_key[-6:]},
+        extra={"user_id": auth.subject, "device_key_suffix": _safe_key_suffix(req.device_key)},
     )
     return device
 
@@ -219,17 +240,17 @@ async def register_device(
 async def list_devices(
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
-):
+) -> list[DeviceResponse]:
     """List all devices registered to the authenticated user."""
     return await service.list_devices(owner_id=auth.subject)
 
 
 @router.get("/{device_key}", response_model=DeviceResponse)
 async def get_device(
-    device_key: DeviceKey,
+    device_key: DeviceKeyPath,
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
-):
+) -> DeviceResponse:
     """Get details of a specific device by its key."""
     device = await service.get_device(owner_id=auth.subject, device_key=device_key)
     if device is None:
@@ -239,11 +260,11 @@ async def get_device(
 
 @router.patch("/{device_key}", response_model=DeviceResponse)
 async def update_device(
-    device_key: DeviceKey,
+    device_key: DeviceKeyPath,
     req: DeviceUpdateRequest,
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
-):
+) -> DeviceResponse:
     """Update device attributes such as posture score or managed status."""
     changes = req.model_dump(exclude_unset=True)
 
@@ -263,14 +284,14 @@ async def update_device(
 
     logger.info(
         "Device updated",
-        extra={"user_id": auth.subject, "device_key_suffix": device_key[-6:]},
+        extra={"user_id": auth.subject, "device_key_suffix": _safe_key_suffix(device_key)},
     )
     return device
 
 
 @router.delete("/{device_key}", status_code=status.HTTP_204_NO_CONTENT)
 async def unregister_device(
-    device_key: DeviceKey,
+    device_key: DeviceKeyPath,
     auth: Annotated[AuthContext, Depends(get_auth_context)],
     service: Annotated[DeviceService, Depends(get_device_service)],
 ) -> Response:
@@ -281,6 +302,6 @@ async def unregister_device(
 
     logger.info(
         "Device unregistered",
-        extra={"user_id": auth.subject, "device_key_suffix": device_key[-6:]},
+        extra={"user_id": auth.subject, "device_key_suffix": _safe_key_suffix(device_key)},
     )
     return Response(status_code=status.HTTP_204_NO_CONTENT)
