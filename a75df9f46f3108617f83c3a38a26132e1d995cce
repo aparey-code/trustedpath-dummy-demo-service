@@ -1,0 +1,25 @@
+app.py
+  b678a9ae6046bc66 8,21
+handlers/session_handler.py
+  b678a9ae6046bc66 1-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "a75df9f46f3108617f83c3a38a26132e1d995cce",
+  "prompts": {
+    "b678a9ae6046bc66": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c3af0b5f-1bab-4b23-91e4-646364693ead",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Ronan Dsouza",
+      "messages": [],
+      "total_additions": 41,
+      "total_deletions": 0,
+      "accepted_lines": 41,
+      "overriden_lines": 0
+    }
+  }
+}
